@@ -1,0 +1,85 @@
+﻿@{
+    ViewBag.Title = "Ajax";
+}
+
+<div class="container text-center">
+
+    <h1>Ajax</h1>
+
+    <div class="row">
+
+        <div class="col-md-12">
+            <img class="img-fluid" id="ajaxChart" />
+        </div>
+
+        <div class="col-md-12">
+            <div class="container table-responsive">
+                <h2>Deals</h2>
+                <div id="ajaxTable">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        getChartAjax();
+        getTableAjax();
+    });
+
+    function getChartAjax() {
+        $.ajax({
+            url: "/Home/GetChart",
+            cache: false,
+            xhr: function () {
+                let xhr = new XMLHttpRequest();
+                xhr.responseType = "blob";
+                return xhr;
+            },
+            success: function (data) {
+                let img = document.getElementById("ajaxChart");
+                var url = window.URL || window.webkitURL;
+                img.src = url.createObjectURL(data);
+            },
+            error: function () {
+
+            }
+        });
+    };
+
+    function getTableAjax() {
+        $.ajax({
+            url: "/Home/GetDeals",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            type: "GET",
+            success: function (response) {
+                let tableHtml = createTable(response);
+                renderTable("#ajaxTable", tableHtml);
+            }
+        });
+    };
+
+    function createTable(data) {
+        let table =
+            "<table class=\"table table-striped table-bordered\"><thead><tr class=\"table-hover\"><th>Id</th><td>Tool</td><td>Price</td><td>Volume</td><td>Date</td><td>Seller</td><td>Buyer</td></tr></thead><tbody>";
+        for (let i = 0; i < data.length; i++) {
+            table += "<tr>";
+            table += "<th>" + data[i]['Id'] + "</th>";
+            table += "<td>" + data[i]['Tool'] + "</td>";
+            table += "<td>" + data[i]['Price'] + "</td>";
+            table += "<td>" + data[i]['Volume'] + "</td>";
+            table += "<td>" + new Date(parseInt(data[i]['Date'].replace(/\D/g, ""))) + "</td>";
+            table += "<td>" + data[i]['Seller'] + "</td>";
+            table += "<td>" + data[i]['Buyer'] + "</td>";
+            table += "</tr>";
+        }
+        table += "</tbody></table>";
+        return table;
+    };
+
+    function renderTable(target, data) {
+        $(target).html(data);
+    };
+</script>

@@ -1,0 +1,19 @@
+﻿@{
+    ViewBag.Title = "Razor";
+}
+
+<div class="container text-center">
+
+    <h1>Razor</h1>
+
+    <div class="row">
+
+        <div class="col-md-12">
+            <img src="@Url.Action("GetChart")" class="img-fluid" />
+        </div>
+
+        <div class="col-md-12">
+            @Html.Action("GetTable")
+        </div>
+    </div>
+</div>
